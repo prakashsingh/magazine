@@ -1,0 +1,32 @@
+<div style="margin-left: 45%">
+  <%= link_to 'Back', articles_path %><br/><br/>
+
+    <p>Title: <%= @article.title %></p>
+    <p>Body: <%= @article.body %></p>
+    <p>Author: <%= @article.author %></p>
+
+    Comments:<br/>
+    <% @article.comments.where("parent_id is null").each do |comment| %>
+      <% nested_comments = Comment.where(parent_id: comment.id) %>
+      <%= comment.body %><%= link_to 'X', comment_path(comment_id: comment.id), method: :delete if nested_comments.blank? && comment.user.id == current_user.id %> <br/>
+      <div style="margin-left: 10px">
+        <% nested_comments.each do |c| %>
+          <%= c.body %> <br/>
+        <% end %>
+      </div>
+      <%= form_for @comment do |f| %>
+        <%= f.text_field :body, placeholder: '+Add new comment' %>
+        <%= f.hidden_field :user_id, value: current_user.id %>
+        <%= f.hidden_field :article_id, value: @article.id %>
+        <%= f.hidden_field :parent_id, value: comment.id %>
+        <%= f.submit 'Comment' %>
+      <% end %>
+      <br/>
+    <% end %>
+    <%= form_for @comment do |f| %>
+      <%= f.text_area :body, placeholder: '+Add new comment' %><br/><br/>
+      <%= f.hidden_field :user_id, value: current_user.id %>
+      <%= f.hidden_field :article_id, value: @article.id %>
+      <%= f.submit 'Post' %>
+    <% end %>
+</div>

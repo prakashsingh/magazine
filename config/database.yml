@@ -1,0 +1,12 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  database: magazine
+  pool: 50
+  host: localhost
+  username: postgres
+  password: postgres
+
+development:
+  <<: *default
+  database: magazine
